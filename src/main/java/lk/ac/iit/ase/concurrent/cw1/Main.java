@@ -1,22 +1,41 @@
 package lk.ac.iit.ase.concurrent.cw1;
 
+import java.util.Scanner;
+
 /**
  * @author Jamith Nimantha
  */// Press ⇧ twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
+    public static Scanner input = new Scanner(System.in);
+
     public static void main(String[] args) {
-        // Press ⌥⏎ with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        printMenu();
+    }
 
-        // Press ⌃R or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
-
-            // Press ⌃D to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing ⌘F8.
-            System.out.println("i = " + i);
+    public static void clearConsole() {
+        try {
+            final String os = System.getProperty("os.name");
+            if (os.contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    public static void printMenu() {
+        System.out.println("\t-----------------------------------------------------------------------------------------");
+        System.out.printf("\t|%63s %22s %1s%n", "Online Retail Shop", "","|");
+        System.out.println("\t-----------------------------------------------------------------------------------------");
+        System.out.println();
+        System.out.println("\t1. Add a new item to the shop");
+        System.out.print("\n\tEnter an option to continue > ");
+        int op = input.nextInt();
+        clearConsole();
     }
 
 }

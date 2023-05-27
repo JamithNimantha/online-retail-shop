@@ -1,5 +1,7 @@
 package service.imp;
 
+import exception.CheckOutException;
+import exception.ShopperNotFoundException;
 import model.Item;
 import model.Shopper;
 import service.ItemService;
@@ -35,7 +37,7 @@ public class ShopperServiceImpl implements ShopperService {
                 .findFirst()
                 .ifPresent(shopper -> {
                     shopper.getCart().put(itemService.getItem(itemId).getItemID(), quantity);
-                    System.out.printf("Item with ID %s added to cart successfully..%n", itemId);
+                    System.out.printf("\tItem with ID %s added to cart successfully..%n", itemId);
                 });
     }
 
@@ -52,7 +54,7 @@ public class ShopperServiceImpl implements ShopperService {
                 .findFirst()
                 .ifPresent(shopper -> {
                     shopper.getCart().remove(itemId);
-                    System.out.printf("Item with ID %s removed from cart successfully..%n", itemId);
+                    System.out.printf("\tItem with ID %s removed from cart successfully..%n", itemId);
                 });
     }
 
@@ -66,7 +68,7 @@ public class ShopperServiceImpl implements ShopperService {
     @Override
     public synchronized void updateItemQuantity(String shopperId, String itemId, int quantity) {
         if (quantity < 1) {
-            System.out.println("Quantity cannot be negative..");
+            System.out.println("\tQuantity cannot be less than 1..");
             return;
         }
         shoppers.stream()
@@ -74,7 +76,7 @@ public class ShopperServiceImpl implements ShopperService {
                 .findFirst()
                 .ifPresent(shopper -> {
                     shopper.getCart().put(itemId, quantity);
-                    System.out.printf("Item with ID %s updated successfully..%n", itemId);
+                    System.out.printf("\tItem with ID %s updated successfully..%n", itemId);
                 });
     }
 
@@ -97,8 +99,19 @@ public class ShopperServiceImpl implements ShopperService {
      * @param shopperId shopper id
      */
     @Override
-    public synchronized void checkout(String shopperId) {
-
+    public synchronized void checkout(String shopperId) throws CheckOutException {
+        Shopper shopper = getShopper(shopperId);
+        shopper.getCart().forEach((itemId, quantity) -> {
+            Item item = itemService.getItem(itemId);
+            if (item.getItemQuantity() < quantity) {
+                throw new CheckOutException(String.format("\tItem with ID %s is out of stock..%n", itemId));
+            }
+            item.setItemQuantity(item.getItemQuantity() - quantity);
+        });
+        System.out.println("\tCheckout:");
+        printCart(shopper);
+        shopper.getCart().clear();
+        System.out.println("\tCart checkout completed successfully..");
     }
 
     /**
@@ -113,6 +126,20 @@ public class ShopperServiceImpl implements ShopperService {
         return shopper.getShopperId();
     }
 
+    /**
+     * Get shopper
+     *
+     * @param shopperId shopper id
+     * @return shopper
+     */
+    @Override
+    public Shopper getShopper(String shopperId) {
+        return shoppers.stream()
+                .filter(shopper -> shopper.getShopperId().equals(shopperId))
+                .findFirst()
+                .orElseThrow(() -> new ShopperNotFoundException(shopperId));
+    }
+
 
     /**
      * Print cart
@@ -124,23 +151,44 @@ public class ShopperServiceImpl implements ShopperService {
         final String itemID = "Item ID";
         final String itemName = "Item Name";
         final String itemQuantity = "Quantity";
+        final String itemPrice = "Price";
+
         // Determine maximum length for each column
-        int idLength = Math.max(itemID.length(), shopper.getCart().keySet().stream().map(String::length).max(Integer::compare).orElse(0));
-        int nameLength = Math.max(itemName.length(), shopper.getCart().keySet().stream().map(itemId -> itemService.getItem(itemID).getItemName()).map(String::length).max(Integer::compare).orElse(0));
-        int quantityLength = Math.max(itemQuantity.length(), shopper.getCart().values().stream().mapToInt(Integer::valueOf).mapToObj(String::valueOf).map(String::length).max(Integer::compare).orElse(0));
+        int idLength = Math.max(itemID.length(), shopper.getCart().keySet().stream()
+                .map(String::length)
+                .max(Integer::compare)
+                .orElse(0));
+        int nameLength = Math.max(itemName.length(), shopper.getCart().keySet().stream()
+                .map(itemId -> itemService.getItem(itemId).getItemName()).map(String::length).max(Integer::compare).orElse(0));
+        int quantityLength = Math.max(itemQuantity.length(), shopper.getCart().values().stream()
+                .mapToInt(Integer::valueOf)
+                .mapToObj(String::valueOf)
+                .map(String::length)
+                .max(Integer::compare)
+                .orElse(0));
+        int priceLength = Math.max(itemPrice.length(), shopper.getCart().entrySet().stream()
+                .map( itemIdByQuantity -> itemService.getItem(itemIdByQuantity.getKey()).getItemPrice() * itemIdByQuantity.getValue())
+                .mapToDouble(Double::valueOf)
+                .mapToObj(String::valueOf)
+                .map(String::length)
+                .max(Integer::compare)
+                .orElse(0));
 
         // Print header
-        String dividerLine = String.format("+%s+%s+%s+", "-".repeat(idLength + 2), "-".repeat(nameLength + 2), "-".repeat(quantityLength + 2));
+        String dividerLine = String.format("+%s+%s+%s+%s+", "-".repeat(idLength + 2), "-".repeat(nameLength + 2), "-".repeat(quantityLength + 2), "-".repeat(priceLength + 2));
         System.out.println(dividerLine);
-        System.out.printf(String.format("| %%-%ds | %%-%ds | %%-%ds |\n", idLength, nameLength, quantityLength), itemID, itemName, itemQuantity);
+        System.out.printf(String.format("| %%-%ds | %%-%ds | %%-%ds | %%-%ds |\n", idLength, nameLength, quantityLength, priceLength), itemID, itemName, itemQuantity, itemPrice);
         System.out.println(dividerLine);
 
         // Print rows
         shopper.getCart().forEach((itemId, quantity) -> {
             Item item = itemService.getItem(itemId);
-            System.out.printf("| %-" + idLength + "s | %-" + nameLength + "s | %-" + quantityLength + "d |\n", item.getItemID(), item.getItemName(), quantity);
+            System.out.printf("| %-" + idLength + "s | %-" + nameLength + "s | %-" + quantityLength + "d | %,-" + priceLength + ".2f |\n", item.getItemID(), item.getItemName(), quantity, item.getItemPrice() * quantity);
         });
         // Print footer
         System.out.println(dividerLine);
+        System.out.println("\tTotal: " + shopper.getCart().entrySet().stream()
+                .map(itemIdByQuantity -> itemService.getItem(itemIdByQuantity.getKey()).getItemPrice() * itemIdByQuantity.getValue())
+                .reduce(0.0, Double::sum));
     }
 }

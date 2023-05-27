@@ -55,4 +55,13 @@ public interface ShopperService extends SuperService{
      * @return shopper id
      */
     String addNewShopper(Shopper shopper);
+
+    /**
+     * Get shopper
+     *
+     * @param shopperId shopper id
+     * @return shopper
+     */
+
+    Shopper getShopper(String shopperId);
 }

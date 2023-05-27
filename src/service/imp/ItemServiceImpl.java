@@ -7,19 +7,21 @@ import service.ItemService;
 import java.util.*;
 
 /**
+ * This class is responsible to perform item related functionalities
+ *
  * @author Jamith Nimantha
  */
 public class ItemServiceImpl implements ItemService {
     private final Set<Item> items = new HashSet<>();
 
     /**
-     *
+     * Get item by item id
      * @param item item to be added
      */
     @Override
     public synchronized void addItem(Item item) {
         if (items.contains(item)) {
-            System.out.printf("Item with ID %s already exists..%n", item.getItemID());
+            System.out.printf("\tItem with ID %s already exists..%n", item.getItemID());
             return;
         }
         items.add(item);
@@ -27,36 +29,47 @@ public class ItemServiceImpl implements ItemService {
     }
 
     /**
-     * @param itemID
-     * @param quantity
+     * Update item quantity
+     *
+     * @param itemID item id
+     * @param quantity  quantity
      */
     @Override
     public synchronized void updateItemQuantity(String itemID, int quantity) {
         Item item = getItem(itemID);
         item.setItemQuantity(quantity);
-        System.out.printf("Item with ID %s updated successfully..%n", itemID);
+        System.out.printf("\tItem with ID %s updated successfully..%n", itemID);
     }
 
 
+    /**
+     * Delete item
+     *
+     * @param item item to be deleted
+     */
     @Override
     public synchronized void deleteItem(Item item) {
         items.remove(item);
-        System.out.printf("Item with ID %s deleted successfully..%n", item.getItemID());
+        System.out.printf("\tItem with ID %s deleted successfully..%n", item.getItemID());
     }
 
     /**
-     * @param itemID
+     * Get item by item id
+     *
+     * @param itemID item id
      */
     @Override
-    public Item getItem(String itemID) throws ItemNotFoundException {
+    public synchronized Item getItem(String itemID) throws ItemNotFoundException {
         return items.stream().filter(item -> item.getItemID().equals(itemID)).findFirst().orElseThrow(() -> new ItemNotFoundException(itemID));
     }
 
     /**
-     * @return
+     * Get all items
+     *
+     * @return set of items
      */
     @Override
-    public Set<Item> getItems()  {
+    public synchronized Set<Item> getItems()  {
         return items;
     }
 }

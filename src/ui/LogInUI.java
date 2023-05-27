@@ -1,5 +1,9 @@
 package ui;
 
+import controller.ItemController;
+import controller.ShopperController;
+import util.Utility;
+
 import java.util.Scanner;
 
 /**
@@ -10,7 +14,15 @@ public final class LogInUI {
     private LogInUI() {
     }
 
+    /**
+     * This method is used to display the login menu
+     *
+     * @param input the Scanner object
+     */
     public static void logIn(Scanner input) {
+        if (Utility.INIT_ITEM) {
+            ItemController.initializeItems();
+        }
         System.out.println("\t-----------------------------------------------------------------------------------------");
         System.out.printf("\t|%63s %22s %1s%n", "Login to Online Retail Shop", "","|");
         System.out.println("\t-----------------------------------------------------------------------------------------");
@@ -24,11 +36,16 @@ public final class LogInUI {
             switch (option) {
                 case 1:
                     System.out.println("\tLogin as System Administrator");
-                    SystemAdminUserInterface.loginAsSystemAdmin(input);
+                    SystemAdminUserCLI.loginAsSystemAdmin(input);
                     break;
                 case 2:
                     System.out.println("\tLogin as Shopper");
-//                    loginAsShopper();
+                    String shopperId = ShopperController.addShopperNewShopper();
+                    ShopperCLI.setShopperId(shopperId);
+                    if (Utility.INIT_SHOPPER) {
+                        ShopperController.initializeShopper(shopperId);
+                    }
+                    ShopperCLI.loginAsShopper(input);
                     break;
                 case 0:
                     System.out.println("\tExiting the program...");

@@ -26,10 +26,22 @@ public class ShopperController {
     }
 
 
+    /**
+     * This method is responsible to return all items list
+     *
+     * @return List of Items object
+     */
     public static List<Item> getAllItems() {
         return new ArrayList<>(itemService.getItems());
     }
 
+    /**
+     * This method is responsible to add item to the cart
+     *
+     * @param shopperId shopper id
+     * @param itemId   item id
+     * @param quantity quantity
+     */
     public static void addItemToCard(String shopperId, String itemId, int quantity) {
 
         Runnable runnable = new Runnable() {
@@ -43,6 +55,11 @@ public class ShopperController {
         Utility.waitTillThreadDie(addItemThread);
     }
 
+    /**
+     * This method is responsible to checkout
+     *
+     * @return shopper id
+     */
     public static String addShopperNewShopper() {
         Shopper shopper = new Shopper();
 
@@ -58,6 +75,11 @@ public class ShopperController {
         return shopper.getShopperId();
     }
 
+    /**
+     * This method is responsible to print item in the cart
+     *
+     * @param shopperId shopper id
+     */
     public static void printItemInTheCart(String shopperId) {
         Runnable runnable = new Runnable() {
             @Override
@@ -70,6 +92,12 @@ public class ShopperController {
         Utility.waitTillThreadDie(thread);
     }
 
+    /**
+     * This method is responsible to remove item from the cart
+     *
+     * @param shopperId shopper id
+     * @param itemId   item id
+     */
     public static void removeItemFromCart(String shopperId, String itemId) {
         Runnable runnable = new Runnable() {
             @Override
@@ -82,6 +110,12 @@ public class ShopperController {
         Utility.waitTillThreadDie(thread);
     }
 
+    /**
+     * This method is responsible to checkout
+     *
+     * @param shopperId shopper id
+     * @throws CheckOutException checkout exception
+     */
     public static void checkout(String shopperId) throws CheckOutException {
         Runnable runnable = new Runnable() {
             @Override
@@ -95,6 +129,11 @@ public class ShopperController {
         Utility.waitTillThreadDie(thread);
     }
 
+    /**
+     * This method is responsible to initialize shopper
+     *
+     * @param shopperId shopper id
+     */
     public static void initializeShopper(String shopperId) {
         shopperService.addItemToCart(shopperId, "ITM1", 1);
         shopperService.addItemToCart(shopperId, "ITM2", 2);

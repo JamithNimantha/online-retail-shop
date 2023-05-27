@@ -51,10 +51,21 @@ public final class ItemController {
 
     }
 
+    /**
+     * This method is responsible to return all items list
+     *
+     * @return List of Items object
+     */
     public static List<Item> getItems() {
         return new ArrayList<>(itemService.getItems());
     }
 
+    /**
+     * This method is responsible to update item quantity
+     *
+     * @param itemId item id
+     * @param itemQuantity item quantity
+     */
     public static void updateItemQuantity(String itemId, int itemQuantity) {
         Runnable runnable = new Runnable() {
             @Override
@@ -67,6 +78,11 @@ public final class ItemController {
         Utility.waitTillThreadDie(thread);
     }
 
+    /**
+     * This method is responsible to delete item
+     *
+     * @param item item
+     */
     public static void deleteItem(Item item) {
         Runnable runnable = new Runnable() {
             @Override
@@ -79,6 +95,9 @@ public final class ItemController {
         Utility.waitTillThreadDie(thread);
     }
 
+    /**
+     * This method is responsible to initialize items
+     */
     public static void initializeItems() {
         itemService.addItem(new Item("ITM1", "Roomba 675 Robot Vacuum", 1, 10.50));
         itemService.addItem(new Item("ITM2", "Apple AirPods Pro", 2, 3400.43));

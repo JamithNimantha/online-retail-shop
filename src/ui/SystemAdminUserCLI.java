@@ -11,6 +11,8 @@ import java.util.Scanner;
 import static util.Utility.clearConsole;
 
 /**
+ * SystemAdminUserCLI class is the command line interface for the system admin.
+ *
  * @author Jamith Nimantha
  */
 public final class SystemAdminUserCLI {
@@ -18,6 +20,11 @@ public final class SystemAdminUserCLI {
     private SystemAdminUserCLI() {
     }
 
+    /**
+     * Login as system admin
+     *
+     * @param input scanner object
+     */
     public static void loginAsSystemAdmin(Scanner input) {
         System.out.println("\t-----------------------------------------------------------------------------------------");
         System.out.printf("\t|%63s %22s %1s%n", "Online Retail Shop - Administrator", "","|");
@@ -73,6 +80,11 @@ public final class SystemAdminUserCLI {
         }
     }
 
+    /**
+     * Add a new item to the shop
+     *
+     * @param input Scanner object
+     */
     private static void deleteItem(Scanner input) {
         System.out.print("\n\tEnter the Item ID >");
         String itemId = input.next();
@@ -89,6 +101,11 @@ public final class SystemAdminUserCLI {
         loginAsSystemAdmin(input);
     }
 
+    /**
+     * View all items in the shop
+     *
+     * @param input Scanner object
+     */
     private static void viewAllItems(Scanner input) {
         List<Item> items = ItemController.getItems();
         Utility.printItemTable(items);
@@ -96,6 +113,11 @@ public final class SystemAdminUserCLI {
         loginAsSystemAdmin(input);
     }
 
+    /**
+     * Update the quantity of an existing item in the shop
+     *
+     * @param input Scanner object
+     */
     private static void updateItem(Scanner input) {
         System.out.print("\n\tEnter the Item ID >");
         String itemId = input.next();
@@ -114,6 +136,11 @@ public final class SystemAdminUserCLI {
         loginAsSystemAdmin(input);
     }
 
+    /**
+     * Add a new item to the shop
+     *
+     * @param input Scanner object
+     */
     public static void addNewItem(Scanner input) {
         System.out.print("\n\tEnter the Item ID >");
         String itemId = input.next();

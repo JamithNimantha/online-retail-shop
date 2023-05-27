@@ -7,6 +7,8 @@ import static util.Utility.IDEA;
 
 
 /**
+ * ConsoleApplication class is the entry point of the program
+ *
  * @author Jamith Nimantha
  */
 public class ConsoleApplication {
@@ -23,6 +25,9 @@ public class ConsoleApplication {
         LogInUI.logIn(input);
     }
 
+    /**
+     * This method is used to initialize the application
+     */
     private static void initApp() {
         Utility.DEBUG_ENABLE = true;
         Utility.INIT_SHOPPER = true;

@@ -18,6 +18,12 @@ import java.util.Scanner;
 public class ShopperCLI {
 
     private static String shopperId;
+
+    /**
+     * Login as shopper
+     *
+     * @param input scanner object
+     */
     public static void loginAsShopper(Scanner input) {
         System.out.println("\t-----------------------------------------------------------------------------------------");
         System.out.printf("\t|%63s %22s %1s%n", "Online Retail Shop - Shopper", "", "|");
@@ -74,6 +80,11 @@ public class ShopperCLI {
         }
     }
 
+    /**
+     * View all the items in the shop
+     *
+     * @param input the scanner object
+     */
     private static void checkout(Scanner input) {
         try {
             ShopperController.checkout(getShopperId());
@@ -85,12 +96,22 @@ public class ShopperCLI {
         ShopperCLI.loginAsShopper(input);
     }
 
+    /**
+     * View all the items in the cart
+     *
+     * @param input the scanner object
+     */
     private static void viewItemsInCart(Scanner input) {
         ShopperController.printItemInTheCart(getShopperId());
         Utility.pressAnyKeyToContinue(input);
         ShopperCLI.loginAsShopper(input);
     }
 
+    /**
+     *  Remove an item from the cart
+     *
+     * @param input  the scanner object
+     */
     private static void removeItemFromCart(Scanner input) {
         System.out.print("\n\tEnter the Item ID >");
         String itemId = input.next();
@@ -107,6 +128,11 @@ public class ShopperCLI {
         ShopperCLI.loginAsShopper(input);
     }
 
+    /**
+     * Add an item to the cart
+     *
+     * @param input the scanner object
+     */
     private static void addItemToCart(Scanner input) {
         System.out.print("\n\tEnter the Item ID >");
         String itemId = input.next();
@@ -133,6 +159,11 @@ public class ShopperCLI {
         ShopperCLI.loginAsShopper(input);
     }
 
+    /**
+     * View all the items in the shop
+     *
+     * @param input the scanner object
+     */
     private static void viewAllItems(Scanner input) {
         List<Item> itemList = ItemController.getItems();
         Utility.printItemTable(itemList);
@@ -140,10 +171,18 @@ public class ShopperCLI {
         ShopperCLI.loginAsShopper(input);
     }
 
+    /**
+     * returns the shopper id
+     *
+     * @return the shopperId
+     */
     public static String getShopperId() {
         return shopperId;
     }
 
+    /**
+     * @param shopperId the shopperId to set
+     */
     public static void setShopperId(String shopperId) {
         ShopperCLI.shopperId = shopperId;
     }

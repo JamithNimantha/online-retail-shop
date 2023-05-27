@@ -7,6 +7,8 @@ import util.Utility;
 import java.util.Scanner;
 
 /**
+ * LogInUI class is the command line interface for the login menu.
+ *
  * @author Jamith Nimantha
  */
 public final class LogInUI {

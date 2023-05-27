@@ -59,6 +59,11 @@ public class Utility {
         return System.getProperty("ide.name", IDEA).equals(IDEA);
     }
 
+    /**
+     * This method is used to wait till a thread die
+     *
+     * @param thread the thread to wait till die
+     */
     public static void waitTillThreadDie(Thread thread) {
         try {
             thread.join();
@@ -67,12 +72,22 @@ public class Utility {
         }
     }
 
+    /**
+     * This method is used to wait till the user press any key
+     *
+     * @param scanner the Scanner object
+     */
     public static void pressAnyKeyToContinue(Scanner scanner) {
         System.out.print("\n\t Press any key to continue >");
         scanner.next();
     }
 
 
+    /**
+     * This method is used to print the item table
+     *
+     * @param items the list of items to print
+     */
     public static void printItemTable(List<Item> items) {
         final String itemID = "Item ID";
         final String itemName = "Item Name";

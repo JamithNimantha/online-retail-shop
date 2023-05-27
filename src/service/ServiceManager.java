@@ -4,6 +4,8 @@ import service.imp.ItemServiceImpl;
 import service.imp.ShopperServiceImpl;
 
 /**
+ * This class is responsible to return singleton service object
+ *
  * @author Jamith Nimantha
  */
 public final class ServiceManager {
@@ -18,6 +20,12 @@ public final class ServiceManager {
     private ServiceManager() {
     }
 
+    /**
+     * This method is responsible to return singleton service object
+     *
+     * @param type service type
+     * @return  service
+     */
     public static SuperService getService(ServiceType type) {
         switch (type) {
             case ITEM_SERVICE:

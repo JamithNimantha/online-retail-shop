@@ -9,6 +9,7 @@ import service.ShopperService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
@@ -18,6 +19,8 @@ public class ShopperServiceImpl implements ShopperService {
 
     private final List<Shopper> shoppers = new ArrayList<>();
     private final ItemService itemService;
+    private final ReentrantLock lock = new ReentrantLock();
+
 
     public ShopperServiceImpl(ItemService itemService) {
         this.itemService = itemService;
@@ -100,18 +103,31 @@ public class ShopperServiceImpl implements ShopperService {
      */
     @Override
     public synchronized void checkout(String shopperId) throws CheckOutException {
-        Shopper shopper = getShopper(shopperId);
-        shopper.getCart().forEach((itemId, quantity) -> {
-            Item item = itemService.getItem(itemId);
-            if (item.getItemQuantity() < quantity) {
-                throw new CheckOutException(String.format("\tItem with ID %s is out of stock..%n", itemId));
+        try {
+            // TODO: Remove the lock
+            while (lock.isLocked()) {
+                System.out.println("\tAnother shopper is checking out..");
+                wait();
             }
-            item.setItemQuantity(item.getItemQuantity() - quantity);
-        });
-        System.out.println("\tCheckout:");
-        printCart(shopper);
-        shopper.getCart().clear();
-        System.out.println("\tCart checkout completed successfully..");
+            lock.lock();
+            Shopper shopper = getShopper(shopperId);
+            shopper.getCart().forEach((itemId, quantity) -> {
+                Item item = itemService.getItem(itemId);
+                if (item.getItemQuantity() < quantity) {
+                    throw new CheckOutException(String.format("\tItem with ID %s is out of stock..%n", itemId));
+                }
+                item.setItemQuantity(item.getItemQuantity() - quantity);
+            });
+            System.out.println("\tCheckout:");
+            printCart(shopper);
+            shopper.getCart().clear();
+            System.out.println("\tCart checkout completed successfully..");
+            notifyAll();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -138,6 +154,16 @@ public class ShopperServiceImpl implements ShopperService {
                 .filter(shopper -> shopper.getShopperId().equals(shopperId))
                 .findFirst()
                 .orElseThrow(() -> new ShopperNotFoundException(shopperId));
+    }
+
+    /**
+     * Get shoppers
+     *
+     * @return shoppers
+     */
+    @Override
+    public List<Shopper> getShoppers() {
+        return this.shoppers;
     }
 
 

@@ -2,6 +2,8 @@ package service;
 
 import model.Shopper;
 
+import java.util.List;
+
 /**
  * @author Jamith Nimantha
  */
@@ -52,7 +54,7 @@ public interface ShopperService extends SuperService{
      * Add new shopper
      *
      * @param shopper shopper
-     * @return shopper id
+     * @return shopper
      */
     String addNewShopper(Shopper shopper);
 
@@ -64,4 +66,11 @@ public interface ShopperService extends SuperService{
      */
 
     Shopper getShopper(String shopperId);
+
+    /**
+     * Get shoppers
+     *
+     * @return shoppers
+     */
+    List<Shopper> getShoppers();
 }
